@@ -7,75 +7,78 @@ import Link from "next/link";
 import { useRef } from "react";
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   
-  // Advanced Scroll-Jacking Hooks for Hero Context
+  // Track scroll specifically for the Hero bounds (200vh)
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: heroRef,
     offset: ["start start", "end start"]
   });
 
   // Calculate dynamic transformations for the video background and text
-  const videoOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 0.2, 0]);
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 0.0]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
+  const textY = useTransform(scrollYProgress, [0, 0.5], [0, 200]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background selection:bg-brand selection:text-brand-foreground" ref={containerRef}>
+    <div className="flex flex-col min-h-screen bg-background selection:bg-brand selection:text-brand-foreground">
       
       {/* IMMERSIVE SCROLL-JACKED HERO VIDEO SECTION */}
-      <section className="relative h-[120vh] w-full overflow-hidden border-b border-border/50">
+      <section className="relative h-[200vh] w-full" ref={heroRef}>
         
-        {/* Sticky Video Background */}
-        <motion.div 
-          className="absolute inset-0 w-full h-full z-0 origin-center"
-          style={{ opacity: videoOpacity, scale: videoScale }}
-        >
-          {/* Fallback glow if video hasn't loaded or isn't present yet */}
-          <div className="absolute inset-0 bg-brand/5 blur-[120px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3 z-0" />
+        {/* Sticky Container for Video & Text */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+        
+          {/* Transforming Video Background */}
+          <motion.div 
+            className="absolute inset-0 w-full h-full z-0 origin-center bg-black"
+            style={{ opacity: videoOpacity, scale: videoScale }}
+          >
+            <div className="absolute inset-0 bg-brand/10 blur-[150px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3 z-0" />
+            
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="absolute inset-0 w-full h-full object-cover mix-blend-screen z-10"
+              src="/hero-bg.mp4"
+            />
+            {/* Deep gradient to blend the bottom explicitly directly into the background */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background z-20 pointer-events-none" />
+          </motion.div>
           
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="absolute inset-0 w-full h-[150vh] object-cover mix-blend-screen opacity-50 z-10"
-            src="/hero-bg.mp4"
-            poster="/fallback-poster.jpg"
-          />
-          {/* Subtle gradient overlay to ensure text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background z-20" />
-        </motion.div>
-        
-        {/* Dynamic Foreground Text */}
-        <motion.div
-          className="sticky top-0 h-screen w-full flex flex-col items-start justify-center container mx-auto px-6 z-30"
-          style={{ y: textY, opacity: textOpacity }}
-        >
-          <div className="max-w-5xl mt-16">
-            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tighter mb-10 leading-[0.95] text-foreground uppercase drop-shadow-2xl">
-              <span className="block opacity-90 drop-shadow-lg">We have reinvented</span>
-              <span className="block opacity-90 drop-shadow-lg">the future of logistics</span>
-              <span className="block text-brand drop-shadow-[0_0_20px_rgba(254,159,77,0.3)]">through the cloud.</span>
-            </h1>
-            
-            <p className="text-xl md:text-3xl text-muted-foreground font-light mb-12 max-w-3xl leading-snug tracking-tight drop-shadow-md">
-              Our AI-native technology turns manual, heavily-fragmented dispatch tasks into completely connected missions. Moving the world by making freight flow perfectly from gate to dock.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-start gap-4">
-              <Button size="lg" className="w-full sm:w-auto text-lg h-16 px-12 rounded-none border border-transparent hover:border-brand-hover tracking-widest uppercase font-semibold relative overflow-hidden group" asChild>
-                <Link href="https://app.distributetms.com/login">
-                  <span className="relative z-10 flex items-center">
-                    Enter The Platform <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0" />
-                </Link>
-              </Button>
+          {/* Dynamic Foreground Text */}
+          <motion.div
+            className="absolute inset-0 flex flex-col items-start justify-center container mx-auto px-6 z-30"
+            style={{ y: textY, opacity: textOpacity }}
+          >
+            <div className="max-w-5xl mt-16">
+              <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-tighter mb-10 leading-[0.95] text-foreground uppercase drop-shadow-2xl">
+                <span className="block opacity-90 drop-shadow-lg">We have reinvented</span>
+                <span className="block opacity-90 drop-shadow-lg">the future of logistics</span>
+                <span className="block text-brand drop-shadow-[0_0_20px_rgba(254,159,77,0.3)]">through the cloud.</span>
+              </h1>
+              
+              <p className="text-xl md:text-3xl text-muted-foreground font-light mb-12 max-w-3xl leading-snug tracking-tight drop-shadow-md">
+                Our AI-native technology turns manual dispatch tasks into perfectly connected missions. Moving the world by making freight flow from gate to dock.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <Button size="lg" className="w-full sm:w-auto text-lg h-16 px-12 rounded-none border border-transparent hover:border-brand-hover tracking-widest uppercase font-semibold relative overflow-hidden group focus-brand" asChild>
+                  <Link href="https://app.distributetms.com/login">
+                    <span className="relative z-10 flex items-center">
+                      Enter The Platform <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0" />
+                  </Link>
+                </Button>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+          
+        </div>
       </section>
 
       {/* MASSIVE INFORMATION BLOCKS (TERMINAL STYLE) */}
