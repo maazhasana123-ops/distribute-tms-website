@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans), var(--font-inter), sans-serif;
+
+  /* Theme Colors */
+  --color-brand: #FE9F4D;
+  --color-brand-hover: #fd8f35;
+  --color-brand-foreground: #ffffff;
+
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  /* Custom Sidebar Colors from Design System */
+  --color-sidebar: #151515;
+  --color-sidebar-foreground: #ffffff;
+  --color-sidebar-accent: #1e1e1e;
+  --color-sidebar-border: #2a2a2a;
+  
+  /* Animations */
+  --animate-fade-in: fade-in 0.15s ease-out both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+}
+
+/* Light Theme Variables */
+:root, .theme-light {
+  --background: oklch(1 0 0); /* #ffffff */
+  --foreground: oklch(0.145 0 0);
+  
+  --card: #ffffff;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: #FE9F4D;
+  
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+
+  --radius: 0.625rem;
+}
+
+/* Dark Theme Variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0); /* #1a1a1a */
+    --foreground: oklch(0.985 0 0);
+    
+    --card: oklch(0.205 0 0);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 10%);
+    --ring: #FE9F4D;
+    
+    --muted: oklch(0.205 0 0);
+    --muted-foreground: oklch(0.8 0 0);
+  }
+}
+
+.dark {
+  --background: oklch(0.145 0 0); /* #1a1a1a */
+  --foreground: oklch(0.985 0 0);
+  
+  --card: oklch(0.205 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: #FE9F4D;
+  
+  --muted: oklch(0.205 0 0);
+  --muted-foreground: oklch(0.8 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  .card-elevated {
+    @apply bg-card border border-border rounded-xl shadow-sm;
+  }
+  .focus-brand:focus-visible {
+    @apply outline-none ring-2 ring-brand/40 ring-offset-1 ring-offset-background;
+  }
+}
